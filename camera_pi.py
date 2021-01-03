@@ -6,6 +6,24 @@ import threading
 import picamera
 import datetime as dt
 
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = io.BytesIO()
+        self.condition = threading.Condition()
+
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            # New frame, copy the existing buffer's content and notify all
+            # clients it's available
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
+
+
 class Camera(object):
     thread = None  # background thread that reads frames from camera
     frame = None  # current frame is stored here by background thread
@@ -28,7 +46,9 @@ class Camera(object):
 
     @classmethod
     def _thread(cls):
+
         with picamera.PiCamera(framerate=24) as camera:
+
             # camera setup
             # camera.resolution = (640, 480)
             # camera.resolution = (735*3, 812*3)
@@ -38,24 +58,16 @@ class Camera(object):
             camera.hflip = False
             camera.vflip = False
 
-            # let camera warm up
-            camera.start_preview()
-            # time.sleep(2)
+            output = StreamingOutput()
+            camera.start_recording(output, format='mjpeg')
 
-            stream = io.BytesIO()
-            for foo in camera.capture_continuous(stream, 'jpeg',
-                                                 use_video_port=True):
-                # store frame
-                stream.seek(0)
-                cls.frame = stream.read()
+            try:
+                while True:
+                    with output.condition:
+                        cls.frame = output.frame
+            except Exception as e:
+                logging.warning(
+                    'Removed streaming client %s', str(e))
 
-                # reset stream for next frame
-                stream.seek(0)
-                stream.truncate()
-
-                # if there hasn't been any clients asking for frames in
-                # the last 10 seconds stop the thread
-                if time.time() - cls.last_access > 10:
-                    break
         cls.thread = None
 
