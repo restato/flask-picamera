@@ -31,7 +31,7 @@ class Camera(object):
         with picamera.PiCamera() as camera:
             # camera setup
             # camera.resolution = (640, 480)
-            camera.resolution = (1280, 720)
+            camera.resolution = (735*3, 812*3)
             camera.annotate_background = picamera.Color('black')
             camera.annotate_text = dt.datetime.now().strftime('%Y-%m-%d')
             camera.hflip = False
