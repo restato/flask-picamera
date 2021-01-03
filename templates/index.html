@@ -1,20 +1,34 @@
-<!--
-   index.html
-   
--->
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <link rel="stylesheet" href='../static/style.css'/>
-    <style>
-		body {
-			text-align: center;
-		}
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>Lee's house</title>
   </head>
   <body>
-    <h3>{{ time }}</h3>
-    <h3><img src="{{ url_for('video_feed') }}" width="80%"></h3>
-    <hr>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-3 col-sm-offset-4">
+          <table class="table table-bordered">
+            <thead>
+              <tr class="active">
+                <th class="text-center">Temperature</th>
+                <th class="text-center">Humidity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-center">
+                <td class="info">{{ temperature|float }}°C</td>
+                <td class="{% if humidity > 50.0 %}danger{% elif (humidity > 40.0) and (humidity < 50.0) %}warning{% else %}success{% endif %}">
+                  {{ humidity|float }}%
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <h3><img src="{{ url_for('video_feed') }}" width="80%"></h3>
+    </div>
   </body>
 </html>
