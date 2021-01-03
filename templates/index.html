@@ -9,14 +9,16 @@
   </head>
   <body>
 	<script>
-		setInterval(function(){
-		$.get('/dht',function(data) {
+        function get_data() {
+  		  $.get('/dht',function(data) {
 			// here, we have the data object returned by 'price' endpoint
 			// you can access its attributes as a regular JSON object
 			document.getElementById("humidity").innerHTML = data.humidity;
 			document.getElementById("temperature").innerHTML = data.temperature;
-		});
-		}, 5000);
+		  });
+        }
+        get_data();
+        setInterval(get_data, 10000);
 	</script>
     <div class="container">
       <div class="row">
@@ -24,14 +26,14 @@
           <table class="table table-bordered">
             <thead>
               <tr class="active">
-                <th class="text-center">Temperature(C)</th>
-                <th class="text-center">Humidity(%)</th>
+                <th class="text-center">Temperature</th>
+                <th class="text-center">Humidity</th>
               </tr>
             </thead>
             <tbody>
               <tr class="text-center">
-                <td id="temperature" class="info"></td>
-                <td id="humidity" class="{% if humidity > 50.0 %}danger{% elif (humidity > 40.0) and (humidity < 50.0) %}warning{% else %}success{% endif %}"></td>
+                <td class="info"><span id="temperature"></span>C</td>
+                <td class="{% if humidity > 50.0 %}danger{% elif (humidity > 40.0) and (humidity < 50.0) %}warning{% else %}success{% endif %}"><span id="humidity"></span>%</td>
               </tr>
             </tbody>
           </table>
