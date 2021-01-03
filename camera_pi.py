@@ -28,10 +28,11 @@ class Camera(object):
 
     @classmethod
     def _thread(cls):
-        with picamera.PiCamera() as camera:
+        with picamera.PiCamera(framerate=24) as camera:
             # camera setup
             # camera.resolution = (640, 480)
-            camera.resolution = (735*3, 812*3)
+            # camera.resolution = (735*3, 812*3)
+            camera.resolution = (735, 812)
             camera.annotate_background = picamera.Color('black')
             camera.annotate_text = dt.datetime.now().strftime('%Y-%m-%d')
             camera.hflip = False
@@ -39,7 +40,7 @@ class Camera(object):
 
             # let camera warm up
             camera.start_preview()
-            time.sleep(2)
+            # time.sleep(2)
 
             stream = io.BytesIO()
             for foo in camera.capture_continuous(stream, 'jpeg',
