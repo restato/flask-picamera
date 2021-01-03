@@ -1,6 +1,6 @@
 import Adafruit_DHT
 
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, jsonify
 from camera_pi import Camera
 from functools import wraps
 
@@ -46,14 +46,18 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
+
 @app.route("/dht")
 @support_jsonp
 def api_dht():
     humidity, temperature = raw_dht()
+    return jsonify({'humidity': humidity, 'temperature': temperature})
+    '''
     if humidity is not None and temperature is not None:
         return "{ temperature: '" + "{0:0.0f}".format(temperature) +  "', humidity: '" + "{0:0.0f}".format(humidity) + "' }"
     else:
         return "Failed to get reading. Try again!", 500
+    '''
 
 
 def raw_dht():

@@ -2,27 +2,36 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href='../static/style.css'/>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <title>Lee's house</title>
   </head>
   <body>
+	<script>
+		setInterval(function(){
+		$.get('/dht',function(data) {
+			// here, we have the data object returned by 'price' endpoint
+			// you can access its attributes as a regular JSON object
+			document.getElementById("humidity").innerHTML = data.humidity;
+			document.getElementById("temperature").innerHTML = data.temperature;
+		});
+		}, 5000);
+	</script>
     <div class="container">
       <div class="row">
         <div class="col-sm-3 col-sm-offset-4">
           <table class="table table-bordered">
             <thead>
               <tr class="active">
-                <th class="text-center">Temperature</th>
-                <th class="text-center">Humidity</th>
+                <th class="text-center">Temperature(C)</th>
+                <th class="text-center">Humidity(%)</th>
               </tr>
             </thead>
             <tbody>
               <tr class="text-center">
-                <td class="info">{{ temperature|float }}°C</td>
-                <td class="{% if humidity > 50.0 %}danger{% elif (humidity > 40.0) and (humidity < 50.0) %}warning{% else %}success{% endif %}">
-                  {{ humidity|float }}%
-                </td>
+                <td id="temperature" class="info"></td>
+                <td id="humidity" class="{% if humidity > 50.0 %}danger{% elif (humidity > 40.0) and (humidity < 50.0) %}warning{% else %}success{% endif %}"></td>
               </tr>
             </tbody>
           </table>
