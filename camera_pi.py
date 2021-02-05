@@ -6,6 +6,8 @@ import threading
 import picamera
 import datetime as dt
 
+from picamera.array import PiRGBArray
+
 class StreamingOutput(object):
     def __init__(self):
         self.frame = None
@@ -60,7 +62,7 @@ class Camera(object):
 
             # let camera warm up
             camera.start_preview()
-            time.sleep(2)
+            # time.sleep(2)
 
             stream = io.BytesIO()
             for foo in camera.capture_continuous(stream, 'jpeg',

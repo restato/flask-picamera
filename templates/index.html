@@ -16,30 +16,45 @@
 			document.getElementById("humidity").innerHTML = data.humidity;
 			document.getElementById("temperature").innerHTML = data.temperature;
 		  });
+
         }
         get_data();
         setInterval(get_data, 10000);
+
+        function get_data2() {
+  		  $.get('/ultrasonic',function(data) {
+			// here, we have the data object returned by 'price' endpoint
+			// you can access its attributes as a regular JSON object
+			document.getElementById("distance").innerHTML = data.distance;
+		  });
+        }
+
+        get_data2();
+        setInterval(get_data2, 1000);
 	</script>
     <div class="container">
       <div class="row">
         <div class="col-sm-3 col-sm-offset-4">
+          <h2> 주휘야 사랑해❤️ </h2>
           <table class="table table-bordered">
             <thead>
               <tr class="active">
                 <th class="text-center">Temperature</th>
                 <th class="text-center">Humidity</th>
+                <th class="text-center">Distnace</th>
               </tr>
             </thead>
             <tbody>
               <tr class="text-center">
                 <td class="info"><span id="temperature"></span>C</td>
                 <td class="{% if humidity > 50.0 %}danger{% elif (humidity > 40.0) and (humidity < 50.0) %}warning{% else %}success{% endif %}"><span id="humidity"></span>%</td>
+                <td class="info"><span id="distance"></span>cm</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <h3><img src="{{ url_for('video_feed') }}" width="80%"></h3>
+      <h3><img src="{{ url_for('video_feed') }}" width="100%"></h3>
     </div>
   </body>
 </html>
